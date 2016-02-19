@@ -3,8 +3,8 @@ import random
 pg.init()
 white = (255,255,255)
 red = (255,0,0)
-blue = (0,255,0)
-green = (0,0,255)
+blue = (0,0,255)
+green = (0,255,0)
 black = (0,0,0)
 from textbox import TextBox
 menuDisplay = pg.display.set_mode((1200,600))
@@ -33,8 +33,9 @@ class Control(object):
         self.clock = pg.time.Clock()
         self.fps = 60.0
         self.done = False
-        self.input = TextBox((820,100,150,30),command=self.change_color,
+        self.input = TextBox((820,100,150,30),command=self.get_input,
                               clear_on_enter=True,inactive_on_enter=False)
+        self.user_input = ""
         self.color = white
         self.prompt = self.make_prompt()
         pg.key.set_repeat(*KEY_REPEAT_SETTING)
@@ -59,19 +60,34 @@ class Control(object):
             print("Please input a valid color name.")
 
     def random_types(self):
+        coords = []
         for i in range(50):
             item = random.randint(1,3)
             print (item)
             radx = random.randint(0,790)
             rady = random.randint(0,590)
+            coords = [radx,rady]
+
             if item == 1:
                 pg.draw.rect(menuDisplay , red,(radx,rady,10,10))
-
+                self.red.append(coords)
             elif item == 2:
                 pg.draw.rect(menuDisplay , blue,(radx,rady,10,10))
+                self.blue.append(coords)
             elif item == 3:
                 pg.draw.rect(menuDisplay, green,(radx,rady,10,10))
+                self.green.append(coords)
             i = i +1
+        print(self.red)
+        print(self.green)
+        print(self.blue)
+
+    def get_input(self,id,input):
+        try:
+            self.user_input = input
+            print(self.user_input)
+        except ValueError:
+            print("ERROR")
 
     def main_loop(self):
         self.random_types()
