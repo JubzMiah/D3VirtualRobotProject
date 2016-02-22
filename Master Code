@@ -1,11 +1,14 @@
+__author__ = 'patrick'
 import pygame as pg
 import random
 pg.init()
+
 white = (255,255,255)
 red = (255,0,0)
 blue = (0,0,255)
 green = (0,255,0)
 black = (0,0,0)
+pink = (255,20,147)
 from textbox import TextBox
 menuDisplay = pg.display.set_mode((1200,600))
 pg.display.set_caption("D3 Virtual Robot")
@@ -29,6 +32,8 @@ class Control(object):
         self.red = []
         self.blue = []
         self.green = []
+        self.num_items = 0
+        self.time = "0"
         self.screen = menuDisplay
         self.clock = pg.time.Clock()
         self.fps = 60.0
@@ -37,13 +42,15 @@ class Control(object):
                               clear_on_enter=True,inactive_on_enter=False)
         self.user_input = ""
         self.color = white
-        self.prompt = self.make_prompt()
+        self.prompt = self.make_prompt('Please input type you want to search')
         pg.key.set_repeat(*KEY_REPEAT_SETTING)
 
 
-    def make_prompt(self):
+    def make_prompt(self,Message):
+        pg.draw.rect(menuDisplay , white,(820,35,400,50))
         font = pg.font.SysFont("arial", 15)
-        message = 'Please input type you want to search'
+        message = Message
+        print(message)
         rend = font.render(message, True, pg.Color("black"))
         return (rend, rend.get_rect(topleft=(820,35)))
 
@@ -86,8 +93,64 @@ class Control(object):
         try:
             self.user_input = input
             print(self.user_input)
+            if self.user_input == "red" or self.user_input == "blue" or self.user_input == "green":
+                self.prompt = self.make_prompt('Where do you want to start : e.g. NW')
+                self.input = TextBox((820,100,150,30),command=self.robot_start,
+                              clear_on_enter=True,inactive_on_enter=False)
+            if input == "red":
+                for coord in self.red:
+                    x = coord[0]
+                    y = coord[1]
+                    pg.draw.rect(menuDisplay, red,(x,y,15,15))
+
+            if input == "blue":
+                for coord in self.blue:
+                    x = coord[0]
+                    y = coord[1]
+                    pg.draw.rect(menuDisplay, blue,(x,y,15,15))
+
+            if input == "green":
+                for coord in self.green:
+                    x = coord[0]
+                    y = coord[1]
+                    pg.draw.rect(menuDisplay, green,(x,y,15,15))
+
+
         except ValueError:
             print("ERROR")
+
+    def robot_start(self,id,input):
+        self.user_input = input
+        if input == "N":
+            pg.draw.rect(menuDisplay, pink,(400,0,20,30))
+        elif input == "E":
+            pg.draw.rect(menuDisplay, pink,(750,300,20,30))
+        elif input == "S":
+            pg.draw.rect(menuDisplay, pink,(400,550,20,30))
+        elif input == "W":
+            pg.draw.rect(menuDisplay, pink,(10,300,20,30))
+        elif input == "NW":
+            pg.draw.rect(menuDisplay, pink,(10,10,20,30))
+        elif input == "NE":
+            pg.draw.rect(menuDisplay, pink,(750,10,20,30))
+        elif input == "SW":
+            pg.draw.rect(menuDisplay, pink,(10,550,20,30))
+        elif input == "SE":
+            pg.draw.rect(menuDisplay, pink,(750,550,20,30))
+
+        self.prompt = self.make_prompt('Please enter the number of items you want to find')
+        self.input = TextBox((820,100,150,30),command=self.number_of_items,
+                        clear_on_enter=True,inactive_on_enter=False)
+
+    def number_of_items(self,id,input):
+        self.num_items = input
+        self.prompt = self.make_prompt('Please enter the time you allowing')
+        self.input = TextBox((820,100,150,30),command=self.number_of_items,
+                        clear_on_enter=True,inactive_on_enter=False)
+
+    def input_time(self,id,input):
+        self.time = input
+
 
     def main_loop(self):
         self.random_types()
