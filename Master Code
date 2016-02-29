@@ -1,9 +1,13 @@
-__author__ = 'patrick'
-import pygame as pg
+""" code authors: Patrick, Alamin, Jubad
+    code was last edited 29/02/2016 - added comments to parts of the code
+"""
+
+
+import pygame as pg #renamed as pg as its quicker to type then pygame
 import random
 pg.init()
 
-white = (255,255,255)
+white = (255,255,255)  #RGB values of colours for the squares
 red = (255,0,0)
 blue = (0,0,255)
 green = (0,255,0)
@@ -11,7 +15,7 @@ black = (0,0,0)
 pink = (255,20,147)
 
 
-clock = pg.time.Clock()
+clock = pg.time.Clock() #allows control of the frames per second
 
 font = pg.font.Font(None, 25)
 frame_count = 0
@@ -19,10 +23,10 @@ frame_rate = 60
 start_time = 180
 
 from textbox import TextBox
-menuDisplay = pg.display.set_mode((1200,600))
-pg.display.set_caption("D3 Virtual Robot")
+menuDisplay = pg.display.set_mode((1200,600)) #size of the widnow
+pg.display.set_caption("D3 Virtual Robot") #title of the window
 
-gameExit = False
+gameExit = False #keeps the window open
 
 import os
 import sys
@@ -34,8 +38,11 @@ from textbox import TextBox
 KEY_REPEAT_SETTING = (200,70)
 
 
-class Control(object):
+class Control(object): #runs main program
     def __init__(self):
+        """
+        The initialisation function of key components of the main program
+        """
         pg.init()
         pg.display.set_caption("Input Box")
         self.red = []
@@ -61,6 +68,9 @@ class Control(object):
 
 
     def make_prompt(self,Message):
+        """
+        Function to create the labels with a white background
+        """
         pg.draw.rect(menuDisplay , white,(820,35,400,50))
         font = pg.font.SysFont("arial", 15)
         message = Message
@@ -68,18 +78,27 @@ class Control(object):
         return (rend, rend.get_rect(topleft=(820,35)))
 
     def event_loop(self):
+        """
+        A continuous FOR loop which allows an exit for our main program
+        """
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.done = True
             self.input.get_event(event)
 
     def change_color(self,id,color):
+        """
+        Colour validation
+        """
         try:
             self.color = pg.Color(str(color))
         except ValueError:
             print("Please input a valid color name.")
 
     def random_types(self):
+        """
+        randomly generates sqaures onto the window
+        """
         names = ["item1", "item2", "item3", "item4", "item5"]
         for i in range(50):
             item = random.randint(1,3)
@@ -105,6 +124,9 @@ class Control(object):
         print(self.blue)
 
     def get_input(self,id,input):
+        """
+        allows the user to enter a specific colour for the VRBH to search for
+        """
         try:
             self.user_input = input
             self.colour = input
@@ -130,12 +152,15 @@ class Control(object):
                     x = coord[0]
                     y = coord[1]
                     pg.draw.rect(menuDisplay, green,(x,y,15,15))
-            self.screen = menuDisplay 
+            self.screen = menuDisplay
 
         except ValueError:
             print("ERROR")
 
     def robot_start(self,id,input):
+        """
+        allows the user to choose the starting position of the robot
+        """
         self.robot_loc = input
         if input == "N":
             pg.draw.rect(menuDisplay, pink,(400,0,20,30))
@@ -167,17 +192,26 @@ class Control(object):
                         clear_on_enter=True,inactive_on_enter=False)
 
     def number_of_items(self,id,input):
+        """
+        allows the usert ot enter the number of items to for the ri
+        """
         self.num_items = int(input)
         self.prompt = self.make_prompt('Please enter the time you allowing')
         self.input = TextBox((820,100,150,30),command=self.input_time,
                         clear_on_enter=True,inactive_on_enter=False)
 
     def input_time(self,id,input):
-
+        """
+        allows user to enter a timer for the robot to run for
+        """
         self.time = input
         self.start_time = int(self.time) * 60
 
     def main_program(self):
+        """
+        counts down from the users inputted timer, assist in robot movement
+        if timer runs out then the program will close
+        """
         clock = pg.time.Clock()
         while not self.done:
             self.event_loop()
@@ -209,6 +243,9 @@ class Control(object):
 	    #else:return
 
     def bubbleSort(self,colourL):
+        """
+        Bubble sort is used to sort arrays into order
+        """
         for passnum in range(len(colourL)-1,0,-1):
             for i in range(passnum):
                 if colourL[i][2]>colourL[i+1][2]:
@@ -217,6 +254,12 @@ class Control(object):
                     colourL[i+1] = temp
 
     def robot_move(self):
+        """
+        depending on the user specified colour, it will order the items in terms of cheapest to most expensive.
+        the robot will go to the cheapest items using the shortest path; this will be repeated until the number of items
+        found is equal to that of how many the user wants returned.
+        this is done by comparing one set of cooradinates to another set of cooridinates to find the shortest path.
+        """
         i = 0
         if self.colour == "red":
             self.bubbleSort(self.red)
@@ -272,6 +315,9 @@ class Control(object):
         #self.collide(self.robot_loc[0], self.robot_loc[0] + 3 , self.robot_loc[1], self.robot_loc[1]+ 6, )
 
     def main_loop(self):
+        """
+        this is where the hwole program is being looped from
+        """
         self.random_types()
         while not self.done:
             self.event_loop()
