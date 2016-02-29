@@ -1,5 +1,5 @@
-import string
-import pygame as pg
+import string #imports premade standard modular function
+import pygame as pg # pygame renamed as pg so its shorter and quicker to type
 
 
 ACCEPTED = string.ascii_letters+string.digits+string.punctuation+" "
