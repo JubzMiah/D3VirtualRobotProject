@@ -2,6 +2,7 @@
 import pygame as pg
 import random
 from textbox import TextBox
+
 pg.init()
 
 #setting up colour RGB values
@@ -15,6 +16,8 @@ bright_red = (200,0,0)
 bright_green = (0,200,0)
 bright_pink = (199,21,133)
 
+bg = pg.image.load('bg.png')
+
 clock = pg.time.Clock()
 
 font = pg.font.Font(None, 25)
@@ -24,7 +27,7 @@ start_time = 180
 
 menuDisplay = pg.display.set_mode((1200,600))
 gameDisplay = pg.display.set_mode((1200, 600))
-display_width = 1200
+display_width = 800
 display_height = 600
 
 gameExit = False
@@ -34,35 +37,50 @@ KEY_REPEAT_SETTING = (200,70)
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
-    
+
+def quit_game():
+    pg.quit()
+    quit()
+
+def start_game():
+    app = MainProgram()
+    app.main_loop()
+      
 #game title screen
 def game_intro():
-
+    x=0
+    y=0
     intro = True
     while intro:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 quit()
-        gameDisplay.fill(white)
-        largeText = pg.font.Font('freesansbold.ttf',115)
+                
+#creating the screen
+        gameDisplay.fill(white)       
+        gameDisplay.blit(bg,(x,y))
+        largeText = pg.font.Font('freesansbold.ttf',80)
         TextSurf, TextRect = text_objects("VR Bargain Hunt", largeText)
         TextRect.center = ((display_width/2),(display_height/2))
         gameDisplay.blit(TextSurf, TextRect)
+
         button("Play",150,450,100,50,green,bright_green,start_game)
-        button ("Instructions", 325,450,150,50,pink,bright_pink) 
-        button("Quit",550,450,100,50,red,bright_red)
+        button ("Instructions", 325,450,150,50,pink,bright_pink)
+        button("Quit",550,450,100,50,red,bright_red,quit_game)
         pg.display.update()
-        clock.tick(5)
-        
+#limit the clock speed to 15 FPS
+        clock.tick(15)
+
+#buttons function defined, event driven action        
 def button(msg,x,y,w,h,ic,ac,action=None):
     mouse = pg.mouse.get_pos()
     click = pg.mouse.get_pressed()
-
+    print(click)
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pg.draw.rect(gameDisplay, ac,(x,y,w,h))
         if click[0] == 1 and action != None:
-            action()         
+            action()
     else:
         pg.draw.rect(gameDisplay, ic,(x,y,w,h))
     smallText = pg.font.SysFont("comicsansms",20)
@@ -70,15 +88,14 @@ def button(msg,x,y,w,h,ic,ac,action=None):
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     gameDisplay.blit(textSurf, textRect)
 
-def start_game():
-    intro = False
-
-
+#initalising the main program
 class MainProgram(object):
     def __init__(self):
         """The initialisation function of key components of the main program"""
         pg.init()
         pg.display.set_caption("D3 Virtual Robot")
+        bg = pg.image.load('mainScreen.png')
+        gameDisplay.blit(bg,(0,0))
         self.red = []
         self.blue = []
         self.green = []
@@ -422,9 +439,6 @@ menuDisplay.fill(white)
 pg.draw.rect(menuDisplay , black,(800,0,10,600))
 #Calls mainprogram to start game
 game_intro()
-
-app = MainProgram()
-app.main_loop()
 
 
 pg.display.update()
