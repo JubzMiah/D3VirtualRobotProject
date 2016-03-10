@@ -351,9 +351,9 @@ class MainProgram(object):
         if self.colour == "red":
             output = self.binarySearch(self.red, self.finishedList[i])
         elif self.colour == "blue":
-            output = self.binarySearch(self.red, self.finishedList[i])
+            output = self.binarySearch(self.blue, self.finishedList[i])
         elif self.colour == "green":
-            output = self.binarySearch(self.red, self.finishedList[i])
+            output = self.binarySearch(self.green, self.finishedList[i])
 
         font = pg.font.SysFont("arial", 20)
         message = str(output[3]) + " | " + str(output[2])
